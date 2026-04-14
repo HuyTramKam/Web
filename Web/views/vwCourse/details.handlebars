@@ -1,0 +1,165 @@
+<nav aria-label="breadcrumb" class="mt-3">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+    <li class="breadcrumb-item"><a href="/courses">Khóa học</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{course.title}}</li>
+  </ol>
+</nav>
+
+<div class="row g-4 my-3">
+  <div class="col-12 col-md-5">
+    <div class="card shadow-sm">
+      <img src="{{course.thumbnail}}" alt="{{course.title}}" class="card-img-top"
+        style="height: 320px; object-fit: contain; background:#f9f9f9;">
+    </div>
+  </div>
+
+  <div class="col-12 col-md-7">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="fw-bold mb-2">{{course.title}}</h2>
+
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <div class="fs-5">
+            {{#if course.sale_price}}
+            <span class="text-danger fw-semibold">{{formatVnd course.sale_price}}</span>
+            <span class="text-muted text-decoration-line-through ms-2">{{formatVnd course.price}}</span>
+            {{else}}
+            <span class="fw-semibold">{{formatVnd course.price}}</span>
+            {{/if}}
+          </div>
+          {{#if course.rating_avg}}
+          <div class="text-warning">
+            <i class="bi bi-star-fill"></i>
+            <strong>{{course.rating_avg}}</strong>
+            <span class="text-muted">({{course.rating_count}} đánh giá)</span>
+          </div>
+          {{/if}}
+          {{#if course.student_count}}
+          <div class="text-muted">
+            <i class="bi bi-people"></i> {{course.student_count}} học viên
+          </div>
+          {{/if}}
+        </div>
+
+        {{#if course.short_desc}}
+        <p class="text-muted mb-2">{{course.short_desc}}</p>
+        {{/if}}
+        {{#if course.description}}
+        <p class="mb-3">{{course.description}}</p>
+        {{/if}}
+
+        <!-- 🔹 Thông tin khóa học & giảng viên -->
+        <div class="card border-0 shadow-sm bg-light bg-opacity-75 mt-3">
+          <div class="card-header bg-primary bg-opacity-10 border-0 py-2">
+            <h6 class="fw-bold text-primary mb-0">
+              <i class="bi bi-info-square me-2"></i> Thông tin khóa học
+            </h6>
+          </div>
+
+          <div class="card-body">
+            {{#if course.instructor_name}}
+            <div class="mb-3">
+              <h6 class="fw-bold mb-1 text-dark">
+                <i class="bi bi-person-badge text-primary me-2"></i>{{course.instructor_name}}
+              </h6>
+              {{#if course.instructor_specialization}}
+              <p class="text-muted mb-1">
+                <i class="bi bi-mortarboard"></i> {{course.instructor_specialization}}
+              </p>
+              {{/if}}
+              {{#if course.instructor_bio}}
+              <p class="small text-secondary mb-0">
+                <i class="bi bi-info-circle"></i> {{course.instructor_bio}}
+              </p>
+              {{/if}}
+            </div>
+
+            <hr class="my-2">
+            {{/if}}
+
+            <div class="row small text-dark">
+              {{#if course.category_name}}
+              <div class="col-12 col-md-6 mb-2">
+                <i class="bi bi-folder2-open text-primary me-1"></i>
+                <strong>Danh mục:</strong> {{course.category_name}}
+              </div>
+              {{/if}}
+
+              {{#if course.created_at}}
+              <div class="col-12 col-md-6 mb-2">
+                <i class="bi bi-calendar-plus text-primary me-1"></i>
+                <strong>Ngày tạo:</strong> {{formatDate course.created_at}}
+              </div>
+              {{/if}}
+
+              {{#if course.updated_at}}
+              <div class="col-12 col-md-6">
+                <i class="bi bi-calendar-check text-primary me-1"></i>
+                <strong>Cập nhật:</strong> {{formatDate course.updated_at}}
+              </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <!-- 🔹 Nút thêm vào danh sách yêu thích -->
+        <form action="/student/watchlist/add" method="post" class="m-0">
+          <input type="hidden" name="course_id" value="{{course.id}}">
+          <input type="hidden" name="course_title" value="{{course.title}}">
+          <button type="submit" class="btn btn-danger d-flex align-items-center px-3 py-2 rounded-3 shadow-sm">
+            <i class="bi bi-heart-fill me-2"></i> Thêm vào danh sách yêu thích
+          </button>
+        </form>
+
+        <!-- 🔹 Nút quay lại -->
+        <button type="button" class="btn btn-outline-secondary d-flex align-items-center px-3 py-2 rounded-3"
+          onclick="window.history.back()">
+          <i class="bi bi-arrow-left me-2"></i> Quay lại
+        </button>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+{{#if course.full_desc}}
+<div class="card shadow-sm my-4">
+  <div class="card-header bg-light">
+    <strong><i class="bi bi-journal-text"></i> Mô tả chi tiết</strong>
+  </div>
+  <div class="card-body">
+    <p class="mb-0">{{course.full_desc}}</p>
+  </div>
+</div>
+{{/if}}
+
+<h4 class="mt-4 mb-3"><i class="bi bi-chat-square-dots"></i> Đánh giá của sinh viên</h4>
+
+{{#if feedbacks.length}}
+<div class="row">
+  {{#each feedbacks}}
+  <div class="col-md-6 col-lg-4 mb-3">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="card-body">
+        <h6 class="card-title text-primary mb-2">
+          <i class="bi bi-person-circle"></i> {{student_name}}
+        </h6>
+        <p class="text-warning mb-1">
+          {{#each (range 1 rating)}}<i class="bi bi-star-fill"></i>{{/each}}
+          {{#each (rangeAdd rating 5)}}<i class="bi bi-star"></i>{{/each}}
+        </p>
+        <p class="card-text text-muted fst-italic">"{{comment}}"</p>
+        <small class="text-secondary">{{formatDate created_at}}</small>
+      </div>
+    </div>
+  </div>
+  {{/each}}
+</div>
+{{else}}
+<div class="text-muted">Chưa có đánh giá nào cho khóa học này.</div>
+{{/if}}

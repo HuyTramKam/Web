@@ -1,0 +1,54 @@
+<div class="container mt-5">
+
+    {{!-- Breadcrumb đơn giản --}}
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/instructor/dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Đăng khóa học mới</li>
+        </ol>
+    </nav>
+
+    {{!-- Tiêu đề chính --}}
+    <h2 class="mb-3 text-primary">🆕 Đăng khóa học mới</h2>
+    {{#if authUser}}
+    <p class="lead text-muted">Chào {{authUser.name}}, hãy hoàn thiện các thông tin dưới đây để tạo khóa học mới.</p>
+    {{else}}
+    <p class="lead text-muted">Hãy điền đầy đủ thông tin khóa học để bắt đầu.</p>
+    {{/if}}
+
+    <div class="card p-4 shadow-sm">
+        {{!-- FORM BẮT ĐẦU --}}
+        <form id="frmCourse" action="/instructor/new" method="POST" enctype="multipart/form-data">
+
+            {{> courseForm }}
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-paper-plane"></i> Tạo khóa học
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{{#fillContent 'css'}}
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+{{/fillContent}}
+
+{{#fillContent 'js'}}
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+<script>
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    placeholder: 'Nhập mô tả chi tiết khóa học...',
+    modules: { toolbar: [['bold','italic','underline'],[{header:1},{header:2}],[{list:'ordered'},{list:'bullet'}],['link','blockquote','code-block'],['clean']] }
+  });
+
+  // BẮT ĐÚNG FORM
+  document.getElementById('frmCourse').addEventListener('submit', function () {
+    const html = quill.root.innerText.trim();
+    document.getElementById('txtFullDesc').value = html;
+  });
+</script>
+
+{{/fillContent}}
